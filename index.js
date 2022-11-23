@@ -32,7 +32,7 @@ async function run() {
         await client.connect();
         const database = client.db("BookBucket");
         const items = database.collection("Items");
-        app.get('/items',async(req,res)=>{
+        app.get('/items', async (req, res) => {
             const query = {};
             const cursor = await items.find(query).toArray();
             // console.log(cursor);
@@ -41,40 +41,54 @@ async function run() {
         })
 
 
-        app.get('/items/:id', async(req, res) => {
+        app.get('/items/:id', async (req, res) => {
             // console.log('item',item);
-            const {id} = req.params;
+            const { id } = req.params;
             // console.log(id);
             // const query = {};
-            const query = {_id:ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const item = await items.findOne(query);
             res.send(item)
             // console.log('item',item);
         })
-        app.post('/update/:id',async(req,res)=>{
+        app.post('/update/:id', async (req, res) => {
             const updatedItem = req.body;
             // console.log(updatedItem);
 
             // to find the item by id
-            const filter = {_id:ObjectId(updatedItem._id)}
-            const result = await items.updateOne(filter,{$set: {"quantity" : updatedItem.quantity}},{});
-            console.log('result',result);
+            const filter = { _id: ObjectId(updatedItem._id) }
+            const result = await items.updateOne(filter, { $set: { "quantity": updatedItem.quantity } }, {});
+            console.log('result', result);
         })
-        app.post('/removeItem/:id',async(req,res)=>{
+        app.post('/removeItem/:id', async (req, res) => {
             const targetItemId = req.body.id;
-            
+
             console.log(targetItemId);
             // to find the item by id
-            const filter = {_id:ObjectId(targetItemId)}
+            const filter = { _id: ObjectId(targetItemId) }
             const result = await items.deleteOne(filter);
-            console.log('result',result);
+            console.log('result', result);
         })
-        app.post('/addItem',async(req,res)=>{
+        app.post('/addItem', async (req, res) => {
             const item = req.body
             const result = await items.insertOne(item);
             console.log(result);
             // console.log('item',item);
-            
+
+        })
+        app.post('/myitems', async (req, res) => {
+            const email = req.body.email;
+            console.log('email', email);
+            // console.log(email === 'ms785314@gmail.com');
+            const query = {addedBy:email};
+
+           
+            if (email) {
+                const cursor = await items.find(query).toArray();
+                // console.log(cursor);
+                res.send(cursor);
+                
+            }
         })
     }
     catch {
