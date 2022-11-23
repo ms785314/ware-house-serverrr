@@ -69,6 +69,13 @@ async function run() {
             const result = await items.deleteOne(filter);
             console.log('result',result);
         })
+        app.post('/addItem',async(req,res)=>{
+            const item = req.body
+            const result = await items.insertOne(item);
+            console.log(result);
+            // console.log('item',item);
+            
+        })
     }
     catch {
         console.log('from error');
