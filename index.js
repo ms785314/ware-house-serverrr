@@ -18,13 +18,7 @@ app.get('/', (req, res) => {
 const uri = `mongodb+srv://${process.env.BOOK_BUCKET_USER}:${process.env.BOOK_BUCKET_PASSWORD}@cluster0.emv1qjy.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// client.connect(err => {
-//     const collection = client.db("test").collection("devices");
-//     // perform actions on the collection object
-//     console.log('db connected');
-//     // client.close();
-//     console.log(err);
-// });
+
 
 
 async function run() {
@@ -35,57 +29,56 @@ async function run() {
         app.get('/items', async (req, res) => {
             const query = {};
             const cursor = await items.find(query).toArray();
-            // console.log(cursor);
+            
             res.send(cursor);
-            // const cursor = movies.find(query);
+            
         })
 
 
         app.get('/items/:id', async (req, res) => {
-            // console.log('item',item);
+           
             const { id } = req.params;
-            // console.log(id);
-            // const query = {};
+            
             const query = { _id: ObjectId(id) }
             const item = await items.findOne(query);
             res.send(item)
-            // console.log('item',item);
+           
         })
         app.post('/update/:id', async (req, res) => {
             const updatedItem = req.body;
-            // console.log(updatedItem);
+            
 
             // to find the item by id
             const filter = { _id: ObjectId(updatedItem._id) }
             const result = await items.updateOne(filter, { $set: { "quantity": updatedItem.quantity } }, {});
-            console.log('result', result);
+           
         })
         app.post('/removeItem/:id', async (req, res) => {
             const targetItemId = req.body.id;
 
-            console.log(targetItemId);
+         
             // to find the item by id
             const filter = { _id: ObjectId(targetItemId) }
             const result = await items.deleteOne(filter);
-            console.log('result', result);
+           
         })
         app.post('/addItem', async (req, res) => {
             const item = req.body
             const result = await items.insertOne(item);
             console.log(result);
             res.send(result);
-            // console.log('item',item);
+          
         })
         app.post('/myitems', async (req, res) => {
             const email = req.body.email;
             console.log('email', email);
-            // console.log(email === 'ms785314@gmail.com');
+           
             const query = {addedBy:email};
 
            
             if (email) {
                 const cursor = await items.find(query).toArray();
-                // console.log(cursor);
+                
                 res.send(cursor);
                 
             }
