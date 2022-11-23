@@ -73,8 +73,8 @@ async function run() {
             const item = req.body
             const result = await items.insertOne(item);
             console.log(result);
+            res.send(result);
             // console.log('item',item);
-
         })
         app.post('/myitems', async (req, res) => {
             const email = req.body.email;
